@@ -11,11 +11,16 @@ function ensureStorageDirectory() {
 }
 
 function getFilePath(storageKey) {
-  if (!storageKey || path.basename(storageKey) !== storageKey) {
+  if (!/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/i.test(storageKey || '')) {
     throw new Error('Invalid storage key');
   }
 
-  return path.join(storageDir, storageKey);
+  const filePath = path.resolve(storageDir, storageKey);
+  if (path.dirname(filePath) !== storageDir) {
+    throw new Error('Invalid storage key');
+  }
+
+  return filePath;
 }
 
 async function removeFile(storageKey) {

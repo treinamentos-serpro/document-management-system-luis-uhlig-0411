@@ -65,7 +65,10 @@ export default function UploadComponent({ onUploadComplete }) {
         </button>
 
         {message && (
-          <p className={`feedback-message ${selectedFile ? 'is-error' : 'is-success'}`} role="status">
+          <p
+            className={`feedback-message ${selectedFile ? 'is-error' : 'is-success'}`}
+            role={selectedFile ? 'alert' : 'status'}
+          >
             {message}
           </p>
         )}
