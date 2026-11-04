@@ -1,4 +1,6 @@
 const documentService = require('../services/documentService');
+const documentUploadService = require('../services/documentUploadService');
+const documentPresenter = require('./documentPresenter');
 
 function requireUser(req, res, next) {
   const owner = req.get('X-User-Id')?.trim();
@@ -27,8 +29,8 @@ async function upload(req, res, next) {
   }
 
   try {
-    const document = await documentService.createDocument(req.file, req.owner);
-    return res.status(201).json(documentService.toPublicDocument(document));
+    const document = await documentUploadService.createDocument(req.file, req.owner);
+    return res.status(201).json(documentPresenter.toPublicDocument(document));
   } catch (error) {
     return next(error);
   }
@@ -37,7 +39,7 @@ async function upload(req, res, next) {
 function list(req, res, next) {
   try {
     const documents = documentService.listDocuments(req.owner);
-    return res.json(documents.map(documentService.toPublicDocument));
+    return res.json(documents.map(documentPresenter.toPublicDocument));
   } catch (error) {
     return next(error);
   }
