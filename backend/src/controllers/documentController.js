@@ -1,5 +1,14 @@
 const documentService = require('../services/documentService');
 
+function sendDocumentNotFound(res) {
+  return res.status(404).json({
+    error: {
+      code: 'DOCUMENT_NOT_FOUND',
+      message: 'Documento não encontrado.',
+    },
+  });
+}
+
 function requireUser(req, res, next) {
   const owner = req.get('X-User-Id')?.trim();
 
@@ -57,12 +66,7 @@ function download(req, res, next) {
     const downloadInfo = documentService.getDownload(req.owner, req.params.id);
 
     if (!downloadInfo) {
-      return res.status(404).json({
-        error: {
-          code: 'DOCUMENT_NOT_FOUND',
-          message: 'Documento não encontrado.',
-        },
-      });
+      return sendDocumentNotFound(res);
     }
 
     return res.download(downloadInfo.filePath, downloadInfo.document.originalName, (error) => {
@@ -75,12 +79,7 @@ function download(req, res, next) {
       }
 
       if (error.code === 'ENOENT') {
-        return res.status(404).json({
-          error: {
-            code: 'DOCUMENT_NOT_FOUND',
-            message: 'Documento não encontrado.',
-          },
-        });
+        return sendDocumentNotFound(res);
       }
 
       return next(error);

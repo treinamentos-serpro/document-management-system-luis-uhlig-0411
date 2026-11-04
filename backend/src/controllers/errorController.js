@@ -17,6 +17,12 @@ function errorController(error, req, res, next) {
     });
   }
 
+  console.error('Erro interno no DMS', {
+    method: req.method,
+    path: req.path,
+    error: error.stack || error.message,
+  });
+
   return res.status(500).json({
     error: {
       code: 'INTERNAL_SERVER_ERROR',
